@@ -131,13 +131,17 @@ where
                 return None;
             }
 
-            let offset = (((h - 1 - y) * w) + x) as usize;
+
+            //let stride = ((((w * self.im.bmp.bpp()) + 31) & ~31) >> 3);
+            let stride = ((((w * self.im.bmp.bpp()) + 31) & !31) >> 3);
+
+            let y_offset = ((h - 1 - y) * stride) as usize;
 
             let data = match self.im.bmp.bpp() {
-                8 => self.image_data[offset] as u32,
-                16 => LittleEndian::read_u16(&self.image_data[offset * 2..]) as u32, // * 2 as two bytes per pixel
-                24 => LittleEndian::read_u24(&self.image_data[offset * 3..]), // * 3 as three bytes per pixel
-                32 => LittleEndian::read_u32(&self.image_data[offset * 4..]), // * 4 as four bytes per pixel
+                8 => self.image_data[y_offset + x as usize] as u32,
+                16 => LittleEndian::read_u16(&self.image_data[y_offset + (x * 2) as usize..]) as u32, // * 2 as two bytes per pixel
+                24 => LittleEndian::read_u24(&self.image_data[y_offset + (x * 3) as usize..]), // * 3 as three bytes per pixel
+                32 => LittleEndian::read_u32(&self.image_data[y_offset + (x * 4) as usize..]), // * 4 as four bytes per pixel
                 _ => panic!("Bit depth {} not supported", self.im.bmp.bpp()),
             };
 
