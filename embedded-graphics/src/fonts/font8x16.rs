@@ -1,5 +1,6 @@
 use crate::fonts::font_builder::{FontBuilder, FontBuilderConf};
 
+/// Font8x16Conf
 #[derive(Debug, Copy, Clone)]
 pub enum Font8x16Conf {}
 impl FontBuilderConf for Font8x16Conf {
